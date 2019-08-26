@@ -1,33 +1,92 @@
-import React from 'react';
+import React, { useState } from 'react';
+import uuid from 'uuid/v1';
+
+import Header from './components/Header';
+import Filter from './components/Filter';
+import Todos from './components/Todos';
 
 function App() {
+
+  const [filter, setFilter] = useState('All');
+  const [todos, setTodos] = useState([]);
+
+  const notCompletedTodos = todos.filter(t => !t.completed).length;
+  const allCompleted = notCompletedTodos === 0;
+
+  const addTodo = (text) => {
+    const newTodos = [...todos, {
+      id: uuid(),
+      text,
+      completed: false
+    }];
+    setTodos(newTodos);
+  };
+
+  const clearCompleted = () => {
+    setTodos(todos.filter(t => !t.completed));
+  };
+
+  const markAllAsComplete = () => {
+    setTodos(todos.map(t => ({
+      ...t,
+      completed: !allCompleted
+    })));
+  };
+
+  const toggleCompleted = id => {
+    setTodos(todos.map(t => {
+      if(t.id !== id) {
+        return t;
+      }
+
+      return {
+        ...t,
+        completed: !t.completed
+      };
+    }));
+  };
+
+  const updateTodoText = (id, text) => {
+    setTodos(todos.map(t => {
+      if(t.id !== id) {
+        return t;
+      }
+
+      return {
+        ...t,
+        text
+      };
+    }));
+  };
+
+  const deleteTodo = id => {
+    setTodos(todos.filter(t => t.id !== id));
+  };
+
+  const toggleAllInput = todos.length > 0 ? (
+    <React.Fragment>
+      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={markAllAsComplete}/>
+      <label htmlFor="toggle-all">Mark all as complete</label>
+    </React.Fragment>
+  ) : null;
+
   return (
     <div>
       <section className="todoapp">
-        <header className="header">
-          <h1>todos</h1>
-          <input className="new-todo" placeholder="What needs to be done?" autoFocus />
-        </header>
+        <Header onNewTodo={addTodo}/>
         <section className="main">
-          <input id="toggle-all" className="toggle-all" type="checkbox" />
-          <label htmlFor="toggle-all">Mark all as complete</label>
-          <ul className="todo-list">
-          </ul>
+          {toggleAllInput}
+          <Todos 
+            filter={filter}
+            todos={todos} 
+            onDeleteTodo={deleteTodo}
+            onToggleTodo={toggleCompleted}
+            onSubmitTodo={updateTodoText}/>
         </section>
         <footer className="footer">
-          <span className="todo-count">1 Item Left</span>
-          <ul className="filters">
-            <li>
-              <a href="#/">All</a>
-            </li>
-            <li>
-              <a href="#/active">Active</a>
-            </li>
-            <li>
-              <a href="#/completed">Completed</a>
-            </li>
-          </ul>
-          <button className="clear-completed">Clear completed</button>
+          <span className="todo-count">{notCompletedTodos} Item Left</span>
+          <Filter current={filter} onChangeFilter={setFilter} />
+          <button className="clear-completed" onClick={clearCompleted}>Clear completed</button>
         </footer>
       </section>
       <footer className="info">
