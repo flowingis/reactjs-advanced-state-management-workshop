@@ -15,27 +15,26 @@ function App() {
   const allCompleted = notCompletedTodos === 0;
 
   const addTodo = (text) => {
-    const newTodos = [...todos, {
+    setTodos(todos => [...todos, {
       id: uuid(),
       text,
       completed: false
-    }];
-    setTodos(newTodos);
+    }]);
   };
 
   const clearCompleted = () => {
-    setTodos(todos.filter(t => !t.completed));
+    setTodos(todos => todos.filter(t => !t.completed));
   };
 
   const markAllAsComplete = () => {
-    setTodos(todos.map(t => ({
+    setTodos(todos => todos.map(t => ({
       ...t,
       completed: !allCompleted
     })));
   };
 
   const toggleCompleted = id => {
-    setTodos(todos.map(t => {
+    setTodos(todos => todos.map(t => {
       if(t.id !== id) {
         return t;
       }
@@ -48,7 +47,7 @@ function App() {
   };
 
   const updateTodoText = (id, text) => {
-    setTodos(todos.map(t => {
+    setTodos(todos => todos.map(t => {
       if(t.id !== id) {
         return t;
       }
@@ -61,7 +60,7 @@ function App() {
   };
 
   const deleteTodo = id => {
-    setTodos(todos.filter(t => t.id !== id));
+    setTodos(todos => todos.filter(t => t.id !== id));
   };
 
   const toggleAllInput = todos.length > 0 ? (
