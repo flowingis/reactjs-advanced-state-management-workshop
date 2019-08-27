@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import uuid from 'uuid/v1';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import { ALL } from './model/filters';
+import stateUpdaters from './App.state';
 
 function App() {
 
@@ -15,48 +15,23 @@ function App() {
   const allCompleted = notCompletedTodos === 0;
 
   const addTodo = (text) => {
-    setTodos(todos => [...todos, {
-      id: uuid(),
-      text,
-      completed: false
-    }]);
+    setTodos(stateUpdaters.add(todos, text));
   };
 
   const clearCompleted = () => {
-    setTodos(todos => todos.filter(t => !t.completed));
+    setTodos(stateUpdaters.clearCompleted(todos));
   };
 
   const markAllAsComplete = () => {
-    setTodos(todos => todos.map(t => ({
-      ...t,
-      completed: !allCompleted
-    })));
+    setTodos(stateUpdaters.toggleAll(todos));
   };
 
   const toggleCompleted = id => {
-    setTodos(todos => todos.map(t => {
-      if(t.id !== id) {
-        return t;
-      }
-
-      return {
-        ...t,
-        completed: !t.completed
-      };
-    }));
+    setTodos(stateUpdaters.toggle(todos, id));
   };
 
   const updateTodoText = (id, text) => {
-    setTodos(todos => todos.map(t => {
-      if(t.id !== id) {
-        return t;
-      }
-
-      return {
-        ...t,
-        text
-      };
-    }));
+    setTodos(stateUpdaters.changeText(todos, id, text));
   };
 
   const deleteTodo = id => {
