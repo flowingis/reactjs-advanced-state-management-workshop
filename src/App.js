@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import { ALL } from './model/filters';
-import stateUpdaters from './App.state';
+import todosModel from './model/todos';
 
 function App() {
 
@@ -15,27 +15,27 @@ function App() {
   const allCompleted = notCompletedTodos === 0;
 
   const addTodo = (text) => {
-    setTodos(stateUpdaters.add(todos, text));
+    setTodos(todosModel.add(todos, text));
   };
 
   const clearCompleted = () => {
-    setTodos(stateUpdaters.clearCompleted(todos));
+    setTodos(todosModel.clearCompleted(todos));
   };
 
   const markAllAsComplete = () => {
-    setTodos(stateUpdaters.toggleAll(todos));
+    setTodos(todosModel.toggleAll(todos));
   };
 
   const toggleCompleted = id => {
-    setTodos(stateUpdaters.toggle(todos, id));
+    setTodos(todosModel.toggle(todos, id));
   };
 
   const updateTodoText = (id, text) => {
-    setTodos(stateUpdaters.changeText(todos, id, text));
+    setTodos(todosModel.changeText(todos, id, text));
   };
 
   const deleteTodo = id => {
-    setTodos(todos => todos.filter(t => t.id !== id));
+    setTodos(todosModel.delete(todos, id));
   };
 
   const toggleAllInput = todos.length > 0 ? (

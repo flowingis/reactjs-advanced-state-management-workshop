@@ -39,11 +39,13 @@ const changeText = (todos, id, text) => todos.map(t => {
     };
 });
 
+const deleteTodo = (todos, id) => todos.filter(t => t.id !== id);
 
 export default {
     add,
     clearCompleted,
     toggleAll,
     toggle,
-    changeText
+    changeText,
+    delete:deleteTodo
 };

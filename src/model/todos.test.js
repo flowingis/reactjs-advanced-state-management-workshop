@@ -1,4 +1,4 @@
-import stateUpdaters from './App.state';
+import stateUpdaters from './todos';
 
 describe('App State Updaters', () => {
   describe('add', () => {
@@ -104,6 +104,26 @@ describe('App State Updaters', () => {
       ], 1, 'New Text');
       
       expect(result[0].text).toBe('New Text');
+    });    
+  });
+
+  describe('delete', () => {
+    it('should remote the selected todo', () => {
+      const result = stateUpdaters.delete([
+        {
+          id: 1,
+          text: 'Not completed',
+          completed: false
+        },
+        {
+          id: 2,
+          text: 'Completed',
+          completed: true
+        }
+      ], 1);
+      
+      expect(result.length).toBe(1);
+      expect(result[0].id).toBe(2);
     });    
   });
 });
