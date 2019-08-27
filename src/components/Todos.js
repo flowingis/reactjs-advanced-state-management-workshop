@@ -1,6 +1,8 @@
 import React from 'react';
 import TodoItem from './TodoItem';
 
+import { ALL, ACTIVE } from '../model/filters';
+
 export default function Todos({
     filter,
     todos,
@@ -10,11 +12,11 @@ export default function Todos({
 }) {
 
     const visibleTodos = todos.filter(t => {
-        if (filter === 'All') {
+        if (filter === ALL) {
             return true;
         }
 
-        if (filter === 'Active') {
+        if (filter === ACTIVE) {
             return !t.completed;
         }
 

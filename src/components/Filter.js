@@ -1,10 +1,5 @@
 import React from 'react';
-
-const FILTERS = [
-    'All',
-    'Active',
-    'Completed'
-];
+import FILTERS from '../model/filters';
 
 export default function Filter({current, onChangeFilter}) {
 

@@ -4,10 +4,11 @@ import uuid from 'uuid/v1';
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
+import { ALL } from './model/filters';
 
 function App() {
 
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState(ALL);
   const [todos, setTodos] = useState([]);
 
   const notCompletedTodos = todos.filter(t => !t.completed).length;
