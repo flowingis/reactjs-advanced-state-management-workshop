@@ -1,7 +1,7 @@
 import React from 'react';
 import TodoItem from './TodoItem';
 
-import { ALL, ACTIVE } from '../model/filters';
+import todosQueries from '../queries/todos';
 
 export default function Todos({
     filter,
@@ -11,27 +11,16 @@ export default function Todos({
     onDeleteTodo
 }) {
 
-    const visibleTodos = todos.filter(t => {
-        if (filter === ALL) {
-            return true;
-        }
-
-        if (filter === ACTIVE) {
-            return !t.completed;
-        }
-
-        return t.completed;
-    });
-
-    const todoElements = visibleTodos.map(todo => (
-        <TodoItem
-            key={todo.id}
-            todo={todo}
-            onDelete={onDeleteTodo}
-            onSubmit={onSubmitTodo}
-            onToggle={onToggleTodo} />
-    )
-    );
+    const todoElements =  todosQueries
+                .visibleTodos(todos, filter)
+                .map(todo => (
+                        <TodoItem
+                            key={todo.id}
+                            todo={todo}
+                            onDelete={onDeleteTodo}
+                            onSubmit={onSubmitTodo}
+                            onToggle={onToggleTodo} />
+                ));
     return (
         <ul className="todo-list">
             {todoElements}

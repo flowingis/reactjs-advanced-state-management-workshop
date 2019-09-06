@@ -5,14 +5,16 @@ import Filter from './components/Filter';
 import Todos from './components/Todos';
 import { ALL } from './model/filters';
 import todosModel from './model/todos';
+import todosQueries from './queries/todos';
+
 
 function App() {
 
   const [filter, setFilter] = useState(ALL);
   const [todos, setTodos] = useState([]);
 
-  const notCompletedTodos = todos.filter(t => !t.completed).length;
-  const allCompleted = notCompletedTodos === 0;
+  const notCompletedTodos = todosQueries.notCompletedTodos(todos);
+  const allCompleted = todosQueries.allCompletedTodos(todos);
 
   const addTodo = (text) => {
     setTodos(todosModel.add(todos, text));
