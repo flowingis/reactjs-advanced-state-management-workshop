@@ -3,42 +3,47 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
-import { ALL } from './model/filters';
-import todosModel from './model/todos';
 import todosQueries from './queries/todos';
 
+function App({state}) {
 
-function App() {
+  const [stateValue, setState] = useState(state.get());
 
-  const [filter, setFilter] = useState(ALL);
-  const [todos, setTodos] = useState([]);
-
-  const notCompletedTodos = todosQueries.notCompletedTodos(todos);
-  const allCompleted = todosQueries.allCompletedTodos(todos);
-
+  const notCompletedTodos = todosQueries.notCompletedTodos(stateValue.todos);
+  const allCompleted = todosQueries.allCompletedTodos(stateValue.todos);
+  
   const addTodo = (text) => {
-    setTodos(todosModel.add(todos, text));
+    setState(state.add(text));
   };
 
   const clearCompleted = () => {
-    setTodos(todosModel.clearCompleted(todos));
+    setState(state.clearCompleted());
   };
 
   const markAllAsComplete = () => {
-    setTodos(todosModel.toggleAll(todos));
+    setState(state.toggleAll());
   };
 
   const toggleCompleted = id => {
-    setTodos(todosModel.toggle(todos, id));
+    setState(state.toggle(id));
   };
 
   const updateTodoText = (id, text) => {
-    setTodos(todosModel.changeText(todos, id, text));
+    setState(state.changeText(id, text));
   };
 
   const deleteTodo = id => {
-    setTodos(todosModel.delete(todos, id));
+    setState(state.delete(id));
   };
+
+  const changeFilter = filter => {
+    setState(state.changeFilter(filter));
+  };
+
+  const {
+    todos,
+    filter
+  } = stateValue;
 
   const toggleAllInput = todos.length > 0 ? (
     <React.Fragment>
@@ -62,7 +67,7 @@ function App() {
         </section>
         <footer className="footer">
           <span className="todo-count">{notCompletedTodos} Item Left</span>
-          <Filter current={filter} onChangeFilter={setFilter} />
+          <Filter current={filter} onChangeFilter={changeFilter} />
           <button className="clear-completed" onClick={clearCompleted}>Clear completed</button>
         </footer>
       </section>
