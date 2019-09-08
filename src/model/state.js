@@ -1,12 +1,15 @@
+import clone from 'lodash.clonedeep';
 import { ALL } from './filters';
 import todosModel from './todos';
 import observableFactory from './observable.js';
 
-export default function stateFactory() {
-    let state = Object.freeze({
-        filter: ALL,
-        todos: []
-    });
+const INITIAL_STATE = {
+    filter: ALL,
+    todos: []
+};
+
+export default function stateFactory(initialState = INITIAL_STATE) {
+    let state = clone(initialState);
 
     const get = () => state;
     
