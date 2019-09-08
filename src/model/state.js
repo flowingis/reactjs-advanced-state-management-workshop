@@ -1,37 +1,20 @@
 import { ALL } from './filters';
 import todosModel from './todos';
-import clone from 'lodash.clonedeep';
-
-const freeze = s => Object.freeze(clone(s));
+import observableFactory from './observable.js';
 
 export default function stateFactory() {
-    let listeners = [];
-
     let state = Object.freeze({
         filter: ALL,
         todos: []
     });
 
-    const get = () => freeze(state);
+    const get = () => state;
     
-    const addChangeListener = cb => {
-        listeners.push(cb);
-        return () => {
-            listeners = listeners
-                .filter(element => element !== cb);
-        };
-    };
-
-    const invokeListeners = () => {
-        listeners.forEach(l => l(get()));
-    };
-
     const changeFilter = filter => {
         state = {
             ...state,
             filter
         };
-        invokeListeners();
     };
 
     const add = (text) => {
@@ -39,7 +22,6 @@ export default function stateFactory() {
             ...state,
             todos: todosModel.add(state.todos, text)
         };
-        invokeListeners();
     };
 
     const clearCompleted = () => {
@@ -47,7 +29,6 @@ export default function stateFactory() {
             ...state,
             todos: todosModel.clearCompleted(state.todos)
         };
-        invokeListeners();
     };
 
     const toggleAll = () => {
@@ -55,7 +36,6 @@ export default function stateFactory() {
             ...state,
             todos: todosModel.toggleAll()
         };
-        invokeListeners();
     };
 
     const toggle = id => {
@@ -63,7 +43,6 @@ export default function stateFactory() {
             ...state,
             todos: todosModel.toggle(state.todos, id)
         };
-        invokeListeners();
     };
 
     const changeText = (id, text) => {
@@ -71,12 +50,9 @@ export default function stateFactory() {
             ...state,
             todos: todosModel.changeText(state.todos, id, text)
         };
-        invokeListeners();
     };
 
-    return {
-        addChangeListener,
-        get,
+    const model = {
         changeFilter,
         toggle,
         toggleAll,
@@ -84,5 +60,7 @@ export default function stateFactory() {
         add,
         clearCompleted
     };
+
+    return observableFactory(model, get);
 
 }
