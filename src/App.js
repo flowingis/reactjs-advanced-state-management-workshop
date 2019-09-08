@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
@@ -7,39 +7,18 @@ import todosQueries from './queries/todos';
 
 function App({state}) {
 
+  useEffect(() => {
+    const unsub = state.addChangeListener(newState => {
+      setState(newState);
+    });
+    return unsub;
+  }, [state]);
+  
   const [stateValue, setState] = useState(state.get());
 
   const notCompletedTodos = todosQueries.notCompletedTodos(stateValue.todos);
   const allCompleted = todosQueries.allCompletedTodos(stateValue.todos);
   
-  const addTodo = (text) => {
-    setState(state.add(text));
-  };
-
-  const clearCompleted = () => {
-    setState(state.clearCompleted());
-  };
-
-  const markAllAsComplete = () => {
-    setState(state.toggleAll());
-  };
-
-  const toggleCompleted = id => {
-    setState(state.toggle(id));
-  };
-
-  const updateTodoText = (id, text) => {
-    setState(state.changeText(id, text));
-  };
-
-  const deleteTodo = id => {
-    setState(state.delete(id));
-  };
-
-  const changeFilter = filter => {
-    setState(state.changeFilter(filter));
-  };
-
   const {
     todos,
     filter
@@ -47,7 +26,7 @@ function App({state}) {
 
   const toggleAllInput = todos.length > 0 ? (
     <React.Fragment>
-      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={markAllAsComplete}/>
+      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={state.toggleAll}/>
       <label htmlFor="toggle-all">Mark all as complete</label>
     </React.Fragment>
   ) : null;
@@ -55,20 +34,20 @@ function App({state}) {
   return (
     <div>
       <section className="todoapp">
-        <Header onNewTodo={addTodo}/>
+        <Header onNewTodo={state.add}/>
         <section className="main">
           {toggleAllInput}
           <Todos 
             filter={filter}
             todos={todos} 
-            onDeleteTodo={deleteTodo}
-            onToggleTodo={toggleCompleted}
-            onSubmitTodo={updateTodoText}/>
+            onDeleteTodo={state.delete}
+            onToggleTodo={state.toggle}
+            onSubmitTodo={state.changeText}/>
         </section>
         <footer className="footer">
           <span className="todo-count">{notCompletedTodos} Item Left</span>
-          <Filter current={filter} onChangeFilter={changeFilter} />
-          <button className="clear-completed" onClick={clearCompleted}>Clear completed</button>
+          <Filter current={filter} onChangeFilter={state.changeFilter} />
+          <button className="clear-completed" onClick={state.clearCompleted}>Clear completed</button>
         </footer>
       </section>
       <footer className="info">
