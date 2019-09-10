@@ -2,16 +2,13 @@ import observableFactory from './observable.js';
 
 let observable;
 let state;
-const actions = {
-  aDummySetter: data => {
-    state = data;
-  }
-};
 
 describe('observable factory', () => {
   beforeEach(() => {
-    state = {};
-    observable = observableFactory(actions, () => state);
+    state = {
+        value: 'dummy'
+    };
+    observable = observableFactory(state);
   });
 
   test('listeners should be invoked when changing data', () => {
@@ -19,7 +16,7 @@ describe('observable factory', () => {
     observable.addChangeListener(data => {
       counter++;
     });
-    observable.aDummySetter('Value');
+    observable.value = 'another dummy';
     expect(counter).toBe(1);
   });
 
@@ -29,18 +26,16 @@ describe('observable factory', () => {
       counter++;
     });
     unsubscribe();
-    observable.aDummySetter('Value');
+    observable.value = 'another dummy';
     expect(counter).toBe(0);
   });
 
   test('in listeners state should be immutable', () => {
-    observable.aDummySetter({
-      name: 'Value'
-    });
     observable.addChangeListener(data => {
       expect(() => {
         data.name = 'Another Value';
       }).toThrow();
     });
+    observable.value = 'another dummy';
   });
 });

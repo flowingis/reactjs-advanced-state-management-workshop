@@ -5,7 +5,7 @@ import Filter from './components/Filter';
 import Todos from './components/Todos';
 import todosQueries from './queries/todos';
 
-function App({state}) {
+function App({state, actions}) {
 
   useEffect(() => {
     const unsub = state.addChangeListener(newState => {
@@ -14,7 +14,7 @@ function App({state}) {
     return unsub;
   }, [state]);
   
-  const [stateValue, setState] = useState(state.get());
+  const [stateValue, setState] = useState(state);
 
   const notCompletedTodos = todosQueries.notCompletedTodos(stateValue.todos);
   const allCompleted = todosQueries.allCompletedTodos(stateValue.todos);
@@ -26,7 +26,7 @@ function App({state}) {
 
   const toggleAllInput = todos.length > 0 ? (
     <React.Fragment>
-      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={state.toggleAll}/>
+      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={actions.toggleAll}/>
       <label htmlFor="toggle-all">Mark all as complete</label>
     </React.Fragment>
   ) : null;
@@ -34,20 +34,20 @@ function App({state}) {
   return (
     <div>
       <section className="todoapp">
-        <Header onNewTodo={state.add}/>
+        <Header onNewTodo={actions.add}/>
         <section className="main">
           {toggleAllInput}
           <Todos 
             filter={filter}
             todos={todos} 
-            onDeleteTodo={state.delete}
-            onToggleTodo={state.toggle}
-            onSubmitTodo={state.changeText}/>
+            onDeleteTodo={actions.delete}
+            onToggleTodo={actions.toggle}
+            onSubmitTodo={actions.changeText}/>
         </section>
         <footer className="footer">
           <span className="todo-count">{notCompletedTodos} Item Left</span>
-          <Filter current={filter} onChangeFilter={state.changeFilter} />
-          <button className="clear-completed" onClick={state.clearCompleted}>Clear completed</button>
+          <Filter current={filter} onChangeFilter={actions.changeFilter} />
+          <button className="clear-completed" onClick={actions.clearCompleted}>Clear completed</button>
         </footer>
       </section>
       <footer className="info">

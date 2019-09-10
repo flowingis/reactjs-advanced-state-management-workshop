@@ -1,12 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import stateFactory from './model/state';
+import observableFactory from './model/observable';
+import actionsFactory from './model/actions';
+import { ALL } from './model/filters';
 
-const state = stateFactory();
+const INITIAL_STATE = {
+  filter: ALL,
+  todos: []
+};
+
+const state = observableFactory(INITIAL_STATE);
+const actions = actionsFactory(state);
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App state={state} />, div);
+  ReactDOM.render(<App state={state} actions={actions} />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
