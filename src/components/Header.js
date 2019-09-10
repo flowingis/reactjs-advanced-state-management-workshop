@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
-import ActionsContext from '../ActionsContext';
+import React, { useState } from 'react';
+import withActions from '../withActions';
 
-export default function Header() {
+function Header({actions}) {
 
     const [value, setValue] = useState('');
-    const { add } = useContext(ActionsContext);
+    const { add } = actions;
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -26,3 +26,5 @@ export default function Header() {
         </header>
     );
 };
+
+export default withActions(Header, 'add');

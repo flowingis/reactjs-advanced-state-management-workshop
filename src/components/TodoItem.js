@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
-import ActionsContext from '../ActionsContext';
+import React, { useState, useEffect } from 'react';
+import withActions from '../withActions';
 
-export default function TodoItem({ 
-    todo
+function TodoItem({ 
+    todo,
+    actions
 }) {
     const { text, completed, id } = todo;
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(text);
-    const actions = useContext(ActionsContext);
-
+    
     let input;
 
     const onCheckboxChange = () => {
@@ -70,3 +70,5 @@ export default function TodoItem({
         </li>
     );
 };
+
+export default withActions(TodoItem, 'toggle', 'changeText', 'delete');

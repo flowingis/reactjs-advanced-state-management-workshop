@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import FILTERS from '../model/filters';
-import ActionsContext from '../ActionsContext';
+import withActions from '../withActions';
 
-export default function Filter({current}) {
+function Filter({current, actions}) {
 
-    const { changeFilter } = useContext(ActionsContext);
+    const { changeFilter } = actions;
 
     const filters = FILTERS.map(filter => (
         <li key={filter}>
@@ -21,3 +21,5 @@ export default function Filter({current}) {
         </ul>
     );
 };
+
+export default withActions(Filter, 'changeFilter');

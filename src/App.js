@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import todosQueries from './queries/todos';
+import withActions from './withActions';
 
-import ActionsContext from './ActionsContext';
-
-function App({state}) {
-
-  const actions = useContext(ActionsContext);
+function App({state, actions}) {
 
   useEffect(() => {
     const unsub = state.addChangeListener(newState => {
@@ -60,4 +57,4 @@ function App({state}) {
   );
 }
 
-export default App;
+export default withActions(App, 'clearCompleted', 'toggleAll');
