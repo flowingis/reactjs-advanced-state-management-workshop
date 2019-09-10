@@ -38,19 +38,16 @@ function App({state}) {
   return (
     <div>
       <section className="todoapp">
-        <Header onNewTodo={actions.add}/>
+        <Header/>
         <section className="main">
           {toggleAllInput}
           <Todos 
             filter={filter}
-            todos={todos} 
-            onDeleteTodo={actions.delete}
-            onToggleTodo={actions.toggle}
-            onSubmitTodo={actions.changeText}/>
+            todos={todos}/>
         </section>
         <footer className="footer">
           <span className="todo-count">{notCompletedTodos} Item Left</span>
-          <Filter current={filter} onChangeFilter={actions.changeFilter} />
+          <Filter current={filter}/>
           <button className="clear-completed" onClick={actions.clearCompleted}>Clear completed</button>
         </footer>
       </section>

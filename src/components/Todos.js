@@ -5,10 +5,7 @@ import todosQueries from '../queries/todos';
 
 export default function Todos({
     filter,
-    todos,
-    onToggleTodo,
-    onSubmitTodo,
-    onDeleteTodo
+    todos
 }) {
 
     const todoElements =  todosQueries
@@ -16,10 +13,7 @@ export default function Todos({
                 .map(todo => (
                         <TodoItem
                             key={todo.id}
-                            todo={todo}
-                            onDelete={onDeleteTodo}
-                            onSubmit={onSubmitTodo}
-                            onToggle={onToggleTodo} />
+                            todo={todo} />
                 ));
     return (
         <ul className="todo-list">

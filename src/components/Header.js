@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ActionsContext from '../ActionsContext';
 
-export default function Header({ onNewTodo }) {
+export default function Header() {
 
     const [value, setValue] = useState('');
+    const { add } = useContext(ActionsContext);
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
-            onNewTodo(e.target.value);
+            add(e.target.value);
             setValue('');
         }
     };
