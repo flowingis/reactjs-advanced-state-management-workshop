@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import withDispatch from '../withDispatch';
 
-export default function Header({ onNewTodo }) {
+function Header({ events }) {
 
     const [value, setValue] = useState('');
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
-            onNewTodo(e.target.value);
+            events.add(e.target.value);
             setValue('');
         }
     };
@@ -24,3 +25,5 @@ export default function Header({ onNewTodo }) {
         </header>
     );
 };
+
+export default withDispatch(Header, 'add');

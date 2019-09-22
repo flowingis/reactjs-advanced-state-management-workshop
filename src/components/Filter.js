@@ -1,13 +1,18 @@
 import React from 'react';
+import pick from 'lodash.pick';
 import { FILTERS } from '../model/filters';
+import withDispatch from '../withDispatch';
+import withState from '../withState';
 
-export default function Filter({current, onChangeFilter}) {
-
+function Filter({state, events}) {
+    const current = state.filter;
+    const { changeFilter } = events;
+    
     const filters = FILTERS.map(filter => (
         <li key={filter}>
             <a 
                 className={current === filter ? 'selected' : ''} 
-                onClick={() => onChangeFilter(filter)}
+                onClick={() => changeFilter(filter)}
                 href="#/">{filter}</a>
         </li>
     ));
@@ -18,3 +23,9 @@ export default function Filter({current, onChangeFilter}) {
         </ul>
     );
 };
+
+const query = state => pick(state, 'filter');
+export default withDispatch(
+    withState(Filter,query),
+    'changeFilter'
+);

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import withDispatch from '../withDispatch';
 
-export default function TodoItem({ 
-    todo, 
-    onToggle, 
-    onSubmit,
-    onDelete
+function TodoItem({ 
+    todo,
+    events
 }) {
     const { text, completed, id } = todo;
     const [editing, setEditing] = useState(false);
@@ -12,7 +11,7 @@ export default function TodoItem({
     let input;
 
     const onCheckboxChange = () => {
-        onToggle(id);
+        events.toggle(id);
     };
 
     const classes = [];
@@ -37,7 +36,7 @@ export default function TodoItem({
     const onKeyDown = (e) => {
         if (e.key === 'Enter') {
             setEditing(false);
-            onSubmit(id, e.target.value);
+            events.changeText(id, e.target.value);
             return;
         }
 
@@ -58,7 +57,7 @@ export default function TodoItem({
             <div className="view">
                 <input className="toggle" type="checkbox" checked={completed} onChange={onCheckboxChange}/>
                 <label onDoubleClick={show}>{text}</label>
-                <button className="destroy" onClick={() => onDelete(id)}></button>
+                <button className="destroy" onClick={() => events.delete(id)}></button>
             </div>
             <input 
                 ref={i => input = i}
@@ -70,3 +69,10 @@ export default function TodoItem({
         </li>
     );
 };
+
+export default withDispatch(
+    TodoItem,
+    'delete',
+    'changeText',
+    'toggle'
+);

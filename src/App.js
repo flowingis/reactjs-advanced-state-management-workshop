@@ -9,15 +9,13 @@ import withState from './withState';
 
 function App({state, events}) {
 
-  const notCompletedTodos = todosQueries.notCompletedTodos(state.todos);
-  const allCompleted = todosQueries.allCompletedTodos(state.todos);
-  
   const {
-    todos,
-    filter
+    shouldShowToggleAll,
+    allCompleted,
+    notCompletedTodos
   } = state;
 
-  const toggleAllInput = todos.length > 0 ? (
+  const toggleAllInput = shouldShowToggleAll ? (
     <React.Fragment>
       <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={events.toggleAll}/>
       <label htmlFor="toggle-all">Mark all as complete</label>
@@ -27,19 +25,14 @@ function App({state, events}) {
   return (
     <div>
       <section className="todoapp">
-        <Header onNewTodo={events.add}/>
+        <Header/>
         <section className="main">
           {toggleAllInput}
-          <Todos 
-            filter={filter}
-            todos={todos} 
-            onDeleteTodo={events.delete}
-            onToggleTodo={events.toggle}
-            onSubmitTodo={events.changeText}/>
+          <Todos/>
         </section>
         <footer className="footer">
           <span className="todo-count">{notCompletedTodos} Item Left</span>
-          <Filter current={filter} onChangeFilter={events.changeFilter} />
+          <Filter />
           <button className="clear-completed" onClick={events.clearCompleted}>Clear completed</button>
         </footer>
       </section>
@@ -52,13 +45,14 @@ function App({state, events}) {
   );
 }
 
+const query = state => ({
+  notCompletedTodos: todosQueries.notCompletedTodos(state.todos),
+  allCompleted: todosQueries.allCompletedTodos(state.todos),
+  shouldShowToggleAll: state.todos.length > 0
+});
+
 export default withDispatch(
-  withState(App), 
-  'add',
-  'changeFilter',
-  'delete',
-  'changeText',
-  'toggle',
+  withState(App, query), 
   'toggleAll',
   'clearCompleted'
 );
