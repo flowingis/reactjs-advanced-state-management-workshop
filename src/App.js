@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import todosQueries from './queries/todos';
-import BusContext from './BusContext';
+import withDispatch from './withDispatch';
 
-function App({eventBus}) {
+function App({eventBus, events}) {
 
   const [stateValue, setState] = useState(eventBus.getState());
-  const {dispatch, eventCreators}  = useContext(BusContext);
 
   useEffect(() => {
     const unsub = eventBus.subscribe(newState => {
@@ -22,34 +21,6 @@ function App({eventBus}) {
   const notCompletedTodos = todosQueries.notCompletedTodos(stateValue.todos);
   const allCompleted = todosQueries.allCompletedTodos(stateValue.todos);
   
-  const addTodo = (text) => {
-    dispatch(eventCreators.add(text));
-  };
-
-  const clearCompleted = () => {
-    dispatch(eventCreators.clearCompleted());
-  };
-
-  const markAllAsComplete = () => {
-    dispatch(eventCreators.toggleAll());
-  };
-
-  const toggleCompleted = id => {
-    dispatch(eventCreators.toggle(id));
-  };
-
-  const updateTodoText = (id, text) => {
-    dispatch(eventCreators.changeText(id,text));
-  };
-
-  const deleteTodo = id => {
-    dispatch(eventCreators.delete(id));
-  };
-
-  const changeFilter = filter => {
-    dispatch(eventCreators.changeFilter(filter));
-  };
-
   const {
     todos,
     filter
@@ -57,7 +28,7 @@ function App({eventBus}) {
 
   const toggleAllInput = todos.length > 0 ? (
     <React.Fragment>
-      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={markAllAsComplete}/>
+      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={events.toggleAll}/>
       <label htmlFor="toggle-all">Mark all as complete</label>
     </React.Fragment>
   ) : null;
@@ -65,20 +36,20 @@ function App({eventBus}) {
   return (
     <div>
       <section className="todoapp">
-        <Header onNewTodo={addTodo}/>
+        <Header onNewTodo={events.add}/>
         <section className="main">
           {toggleAllInput}
           <Todos 
             filter={filter}
             todos={todos} 
-            onDeleteTodo={deleteTodo}
-            onToggleTodo={toggleCompleted}
-            onSubmitTodo={updateTodoText}/>
+            onDeleteTodo={events.delete}
+            onToggleTodo={events.toggle}
+            onSubmitTodo={events.changeText}/>
         </section>
         <footer className="footer">
           <span className="todo-count">{notCompletedTodos} Item Left</span>
-          <Filter current={filter} onChangeFilter={changeFilter} />
-          <button className="clear-completed" onClick={clearCompleted}>Clear completed</button>
+          <Filter current={filter} onChangeFilter={events.changeFilter} />
+          <button className="clear-completed" onClick={events.clearCompleted}>Clear completed</button>
         </footer>
       </section>
       <footer className="info">
@@ -90,4 +61,13 @@ function App({eventBus}) {
   );
 }
 
-export default App;
+export default withDispatch(
+  App, 
+  'add',
+  'changeFilter',
+  'delete',
+  'changeText',
+  'toggle',
+  'toggleAll',
+  'clearCompleted'
+);
