@@ -1,9 +1,10 @@
-import stateUpdaters from './todos';
+import todoModel from './todos';
+import eventCreators from './eventCreators';
 
-describe('App State Updaters', () => {
+describe('Todos model', () => {
   describe('add', () => {
     it('should add a todo to the list', () => {
-      const result = stateUpdaters.add([], 'Todo');
+      const result = todoModel([], eventCreators.add('Todo'));
       
       expect(result.length).toBe(1);
 
@@ -16,7 +17,7 @@ describe('App State Updaters', () => {
 
   describe('clearCompleted', () => {
     it('should remove completed todos', () => {
-      const result = stateUpdaters.clearCompleted([
+      const prevState = [
         {
           text: 'Not completed',
           completed: false
@@ -25,7 +26,9 @@ describe('App State Updaters', () => {
           text: 'Completed',
           completed: true
         }
-      ]);
+      ];
+      
+      const result = todoModel(prevState, eventCreators.clearCompleted());
       
       expect(result.length).toBe(1);
       const [todo] = result;
@@ -35,7 +38,7 @@ describe('App State Updaters', () => {
 
   describe('toggleAll', () => {
     it('should set all todos to completed if there is at least one active todo', () => {
-      const result = stateUpdaters.toggleAll([
+      const prevState = [
         {
           text: 'Not completed',
           completed: false
@@ -44,7 +47,9 @@ describe('App State Updaters', () => {
           text: 'Completed',
           completed: true
         }
-      ]);
+      ];
+
+      const result = todoModel(prevState, eventCreators.toggleAll());
       
       expect(result.length).toBe(2);
       expect(result[0].completed).toBe(true);
@@ -52,7 +57,7 @@ describe('App State Updaters', () => {
     });   
     
     it('should set all todos to active if all todos are completed', () => {
-      const result = stateUpdaters.toggleAll([
+      const prevState = [
         {
           text: 'Completed',
           completed: true
@@ -61,7 +66,9 @@ describe('App State Updaters', () => {
           text: 'Completed',
           completed: true
         }
-      ]);
+      ];
+
+      const result = todoModel(prevState, eventCreators.toggleAll());
       
       expect(result.length).toBe(2);
       expect(result[0].completed).toBe(false);
@@ -71,7 +78,7 @@ describe('App State Updaters', () => {
 
   describe('toggle', () => {
     it('should change state of the selected todo', () => {
-      const result = stateUpdaters.toggle([
+      const prevState = [
         {
           id: 1,
           text: 'Not completed',
@@ -82,7 +89,9 @@ describe('App State Updaters', () => {
           text: 'Completed',
           completed: true
         }
-      ], 1);
+      ];
+
+      const result = todoModel(prevState, eventCreators.toggle(1));
       
       expect(result[0].completed).toBe(true);
     });    
@@ -90,7 +99,7 @@ describe('App State Updaters', () => {
 
   describe('changeText', () => {
     it('should change text of the selected todo', () => {
-      const result = stateUpdaters.changeText([
+      const prevState = [
         {
           id: 1,
           text: 'Not completed',
@@ -101,15 +110,17 @@ describe('App State Updaters', () => {
           text: 'Completed',
           completed: true
         }
-      ], 1, 'New Text');
-      
+      ];
+
+      const result = todoModel(prevState, eventCreators.changeText(1, 'New Text'));
+
       expect(result[0].text).toBe('New Text');
     });    
   });
 
   describe('delete', () => {
     it('should remote the selected todo', () => {
-      const result = stateUpdaters.delete([
+      const prevState = [
         {
           id: 1,
           text: 'Not completed',
@@ -120,8 +131,10 @@ describe('App State Updaters', () => {
           text: 'Completed',
           completed: true
         }
-      ], 1);
-      
+      ];
+
+      const result = todoModel(prevState, eventCreators.delete(1));
+
       expect(result.length).toBe(1);
       expect(result[0].id).toBe(2);
     });    

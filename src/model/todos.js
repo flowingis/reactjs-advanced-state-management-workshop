@@ -1,8 +1,9 @@
 import uuid from 'uuid/v1';
+import { EVENT_TYPES } from './eventCreators';
 
-const add = (todos, text) => [...todos, {
+const add = (todos, event) => [...todos, {
     id: uuid(),
-    text,
+    text: event.payload,
     completed: false
 }];
 
@@ -17,8 +18,8 @@ const toggleAll = todos => {
     }));
 };
 
-const toggle = (todos, id) => todos.map(t => {
-    if (t.id !== id) {
+const toggle = (todos, event) => todos.map(t => {
+    if (t.id !== event.payload) {
         return t;
     }
 
@@ -28,7 +29,8 @@ const toggle = (todos, id) => todos.map(t => {
     };
 });
 
-const changeText = (todos, id, text) => todos.map(t => {
+const changeText = (todos, event) => todos.map(t => {
+    const {id, text} = event.payload;
     if (t.id !== id) {
         return t;
     }
@@ -39,13 +41,27 @@ const changeText = (todos, id, text) => todos.map(t => {
     };
 });
 
-const deleteTodo = (todos, id) => todos.filter(t => t.id !== id);
+const deleteTodo = (todos, event) => todos.filter(t => t.id !== event.payload);
 
-export default {
-    add,
-    clearCompleted,
-    toggleAll,
-    toggle,
-    changeText,
-    delete:deleteTodo
-};
+const model = {
+    [EVENT_TYPES.ITEM_ADDED]: add,
+    [EVENT_TYPES.TEXT_CHANGED]: changeText,
+    [EVENT_TYPES.ITEM_DELETED]: deleteTodo,
+    [EVENT_TYPES.ITEM_TOGGLED]: toggle,
+    [EVENT_TYPES.ALL_ITEMS_TOGGLED]: toggleAll,
+    [EVENT_TYPES.COMPLETED_ITEMS_DELETED]: clearCompleted
+  };
+  
+  export default (prevState, event) => {
+    if (!event) {
+      return [];
+    }
+  
+    const currentModel = model[event.type];
+  
+    if (!currentModel) {
+      return prevState;
+    }
+  
+    return currentModel(prevState, event);
+  };

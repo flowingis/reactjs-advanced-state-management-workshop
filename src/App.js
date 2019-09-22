@@ -1,43 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import eventCreators from './model/eventCreators';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import todosQueries from './queries/todos';
 
-function App({state}) {
+function App({eventBus}) {
 
-  const [stateValue, setState] = useState(state.get());
+  const [stateValue, setState] = useState(eventBus.getState());
+  
+  useEffect(() => {
+    const unsub = eventBus.subscribe(newState => {
+      setState(newState);
+    });
+    return unsub;
+  }, [eventBus]);
+
 
   const notCompletedTodos = todosQueries.notCompletedTodos(stateValue.todos);
   const allCompleted = todosQueries.allCompletedTodos(stateValue.todos);
   
   const addTodo = (text) => {
-    setState(state.add(text));
+    eventBus.dispatch(eventCreators.add(text));
   };
 
   const clearCompleted = () => {
-    setState(state.clearCompleted());
+    eventBus.dispatch(eventCreators.clearCompleted());
   };
 
   const markAllAsComplete = () => {
-    setState(state.toggleAll());
+    eventBus.dispatch(eventCreators.toggleAll());
   };
 
   const toggleCompleted = id => {
-    setState(state.toggle(id));
+    eventBus.dispatch(eventCreators.toggle(id));
   };
 
   const updateTodoText = (id, text) => {
-    setState(state.changeText(id, text));
+    eventBus.dispatch(eventCreators.changeText(id,text));
   };
 
   const deleteTodo = id => {
-    setState(state.delete(id));
+    eventBus.dispatch(eventCreators.delete(id));
   };
 
   const changeFilter = filter => {
-    setState(state.changeFilter(filter));
+    eventBus.dispatch(eventCreators.changeFilter(filter));
   };
 
   const {

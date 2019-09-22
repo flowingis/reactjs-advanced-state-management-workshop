@@ -1,5 +1,5 @@
 import React from 'react';
-import FILTERS from '../model/filters';
+import { FILTERS } from '../model/filters';
 
 export default function Filter({current, onChangeFilter}) {
 

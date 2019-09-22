@@ -1,74 +1,33 @@
-import { ALL } from './filters';
-import todosModel from './todos';
 import clone from 'lodash.clonedeep';
+import todoModel from './todos.js';
+import filterModel from './filters.js';
 
-const freeze = s => Object.freeze(clone(s));
+const INITIAL_STATE = {
+  todos: [],
+  filter: 'All'
+};
 
-export default function stateFactory() {
-    let state = Object.freeze({
-        filter: ALL,
-        todos: []
-    });
+export default (initalState = INITIAL_STATE) => {
+  return (prevState, event) => {
+    if (!event) {
+      return clone(initalState);
+    }
 
- 
-    const changeFilter = filter => {
-        state = {
-            ...state,
-            filter
-        };
-        return freeze(state);
-    };
+    const {
+      todos,
+      filter
+    } = prevState;
 
-    const add = (text) => {
-        state = {
-            ...state,
-            todos: todosModel.add(state.todos, text)
-        };
-        return freeze(state);
-    };
-    
-    const clearCompleted = () => {
-        state = {
-            ...state,
-            todos: todosModel.clearCompleted(state.todos)
-        };
-        return freeze(state);
-    };
-    
-    const toggleAll = () => {
-        state = {
-            ...state,
-            todos: todosModel.toggleAll()
-        };
-        return freeze(state);
-    };
-    
-    const toggle = id => {
-        state = {
-            ...state,
-            todos: todosModel.toggle(state.todos, id)
-        };
-        return freeze(state);
-    };
-    
-    const changeText = (id, text) => {
-        state = {
-            ...state,
-            todos: todosModel.changeText(state.todos, id, text)
-        };
-        return freeze(state);
-    };
+    const newTodos = todoModel(todos, event);
+    const newFilter = filterModel(filter, event);
 
-    const get = () => freeze(state);
+    if (newTodos === todos && newFilter === filter) {
+      return prevState;
+    }
 
     return {
-        get,
-        changeFilter,
-        toggle,
-        toggleAll,
-        changeText,
-        add,
-        clearCompleted
+      todos: newTodos,
+      filter: newFilter
     };
-    
-}
+  };
+};

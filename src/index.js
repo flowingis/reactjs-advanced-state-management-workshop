@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-import stateFactory from './model/state';
+import eventBusFactory from './model/eventBus.js';
+import modelFactory from './model/state.js';
 
-const state = stateFactory();
+const model = modelFactory();
+const eventBus = eventBusFactory(model);
 
-ReactDOM.render(<App state={state}/>, document.getElementById('root'));
+ReactDOM.render(<App eventBus={eventBus}/>, document.getElementById('root'));

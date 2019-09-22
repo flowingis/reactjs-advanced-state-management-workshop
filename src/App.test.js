@@ -1,12 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import stateFactory from './model/state';
+import eventBusFactory from './model/eventBus.js';
 
-const state = stateFactory();
+const DUMMY_STATE = {
+  filter: 'All',
+  todos: []
+};
+
+const eventBus = eventBusFactory((e, state) => DUMMY_STATE);
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App state={state} />, div);
+  ReactDOM.render(<App eventBus={eventBus} />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
