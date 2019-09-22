@@ -14,9 +14,15 @@ export default (model) => {
     };
   };
 
-  const invokeSubscribers = () => {
+  const invokeSubscribers = (state, event, oldState) => {
     const data = freeze(state);
-    listeners.forEach(l => l(data));
+    listeners.forEach(listener => {
+      listener(
+        data,
+        event,
+        oldState
+      );
+    });
   };
 
   const dispatch = event => {
@@ -30,9 +36,9 @@ export default (model) => {
       return;
     }
 
-    state = newState;
+    invokeSubscribers(newState, event, state);
 
-    invokeSubscribers();
+    state = newState;
   };
 
   return {
