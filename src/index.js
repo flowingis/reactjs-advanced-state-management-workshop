@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import BusContext from './BusContext';
+import eventCreators from './model/eventCreators';
 
 import eventBusFactory from './model/eventBus.js';
 import modelFactory from './model/state.js';
@@ -28,4 +30,12 @@ eventBus.subscribe((newState, event, oldState) => {
 
 window.goBack = eventBus.goBack;
 
-ReactDOM.render(<App eventBus={eventBus}/>, document.getElementById('root'));
+const contextValue = {
+    eventCreators,
+    dispatch: eventBus.dispatch
+};
+
+ReactDOM.render(<BusContext.Provider value={contextValue}>
+    <App eventBus={eventBus}/>
+</BusContext.Provider>, 
+document.getElementById('root'));
