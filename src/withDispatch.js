@@ -3,10 +3,10 @@ import BusContext from './BusContext';
 
 const withDispatch = (Component, ...eventPaths) => {
     return (props) => {
-        const {dispatch, eventCreators}  = useContext(BusContext);
+        const {eventBus, eventCreators}  = useContext(BusContext);
 
         const events = eventPaths.reduce((acc, eventPath) => {
-            acc[eventPath] = (...props) => dispatch(eventCreators[eventPath](...props)); 
+            acc[eventPath] = (...props) => eventBus.dispatch(eventCreators[eventPath](...props)); 
             return acc;
         }, {});
         return <Component events={events} {...props} />;

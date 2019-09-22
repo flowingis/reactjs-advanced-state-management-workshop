@@ -32,10 +32,10 @@ window.goBack = eventBus.goBack;
 
 const contextValue = {
     eventCreators,
-    dispatch: eventBus.dispatch
+    eventBus
 };
 
 ReactDOM.render(<BusContext.Provider value={contextValue}>
-    <App eventBus={eventBus}/>
+    <App/>
 </BusContext.Provider>, 
 document.getElementById('root'));

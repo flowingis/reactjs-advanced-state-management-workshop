@@ -1,30 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import todosQueries from './queries/todos';
 import withDispatch from './withDispatch';
+import withState from './withState';
 
-function App({eventBus, events}) {
+function App({state, events}) {
 
-  const [stateValue, setState] = useState(eventBus.getState());
-
-  useEffect(() => {
-    const unsub = eventBus.subscribe(newState => {
-      setState(newState);
-    });
-    return unsub;
-  }, [eventBus]);
-
-
-  const notCompletedTodos = todosQueries.notCompletedTodos(stateValue.todos);
-  const allCompleted = todosQueries.allCompletedTodos(stateValue.todos);
+  const notCompletedTodos = todosQueries.notCompletedTodos(state.todos);
+  const allCompleted = todosQueries.allCompletedTodos(state.todos);
   
   const {
     todos,
     filter
-  } = stateValue;
+  } = state;
 
   const toggleAllInput = todos.length > 0 ? (
     <React.Fragment>
@@ -62,7 +53,7 @@ function App({eventBus, events}) {
 }
 
 export default withDispatch(
-  App, 
+  withState(App), 
   'add',
   'changeFilter',
   'delete',
