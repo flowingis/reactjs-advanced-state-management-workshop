@@ -1,10 +1,12 @@
 import clone from 'lodash.clonedeep';
 
+const MAX_HISTORY_SIZE = 5;
 const freeze = state => Object.freeze(clone(state));
 
 export default (model) => {
   let listeners = [];
   let state = model();
+  let history = [];
 
   const subscribe = listener => {
     listeners.push(listener);
@@ -26,6 +28,11 @@ export default (model) => {
   };
 
   const dispatch = event => {
+    if(history.length === MAX_HISTORY_SIZE) {
+      history.shift();
+    }
+    history.push(state);
+    
     const newState = model(state, event);
 
     if (!newState) {
@@ -37,6 +44,20 @@ export default (model) => {
     }
 
     invokeSubscribers(newState, event, state);
+    state = newState;
+  };
+
+  const goBack = () => {
+    if(history.length === 0) {
+      return;
+    }
+
+    const newState = history.pop();
+    const backEvent = {
+      type: 'HISTORY_BACK'
+    };
+
+    invokeSubscribers(newState, backEvent, state);
 
     state = newState;
   };
@@ -44,6 +65,7 @@ export default (model) => {
   return {
     subscribe,
     dispatch,
+    goBack,
     getState: () => freeze(state)
   };
 };

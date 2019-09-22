@@ -26,5 +26,6 @@ eventBus.subscribe((newState, event, oldState) => {
     console.groupEnd();
 });
 
+window.goBack = eventBus.goBack;
 
 ReactDOM.render(<App eventBus={eventBus}/>, document.getElementById('root'));
