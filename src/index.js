@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import { createLogger } from 'redux-logger';
 
 import App from './App';
 import todosReducer from './model/todosReducer';
 import filterReducer from './model/filterReducer';
+
+const logger = createLogger();
 
 const loadState = () => {
     const data = window.localStorage.getItem('STATE');
@@ -18,7 +21,11 @@ const reducers = combineReducers({
     filter: filterReducer
 });
 
-const store = createStore(reducers, loadState());
+const store = createStore(
+    reducers, 
+    loadState(),
+    applyMiddleware(logger)
+);
 
 store.subscribe(() => {
     window.localStorage.setItem('STATE', JSON.stringify(store.getState()));
