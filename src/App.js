@@ -1,49 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import todosQueries from './queries/todos';
+import actionCreators from './model/actionCreators';
 
-function App({state}) {
 
-  const [stateValue, setState] = useState(state.get());
+function App({todos, filter, dispatch}) {
 
-  const notCompletedTodos = todosQueries.notCompletedTodos(stateValue.todos);
-  const allCompleted = todosQueries.allCompletedTodos(stateValue.todos);
+  const notCompletedTodos = todosQueries.notCompletedTodos(todos);
+  const allCompleted = todosQueries.allCompletedTodos(todos);
   
   const addTodo = (text) => {
-    setState(state.add(text));
+    dispatch(actionCreators.add(text));
   };
 
   const clearCompleted = () => {
-    setState(state.clearCompleted());
+    dispatch(actionCreators.clearCompleted());
   };
 
   const markAllAsComplete = () => {
-    setState(state.toggleAll());
+    dispatch(actionCreators.toggleAll());
   };
 
   const toggleCompleted = id => {
-    setState(state.toggle(id));
+    dispatch(actionCreators.toggle(id));
   };
 
   const updateTodoText = (id, text) => {
-    setState(state.changeText(id, text));
+    dispatch(actionCreators.changeText(id,text));
   };
 
   const deleteTodo = id => {
-    setState(state.delete(id));
+    dispatch(actionCreators.delete(id));
   };
 
   const changeFilter = filter => {
-    setState(state.changeFilter(filter));
+    dispatch(actionCreators.changeFilter(filter));
   };
-
-  const {
-    todos,
-    filter
-  } = stateValue;
 
   const toggleAllInput = todos.length > 0 ? (
     <React.Fragment>
@@ -80,4 +76,4 @@ function App({state}) {
   );
 }
 
-export default App;
+export default connect(s => s)(App);

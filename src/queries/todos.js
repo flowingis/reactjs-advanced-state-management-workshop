@@ -1,4 +1,4 @@
-import { ALL, ACTIVE } from '../model/filters';
+import { ALL, ACTIVE } from '../model/filterReducer';
 
 const notCompletedTodos = todos => todos.filter(t => !t.completed).length;
 const allCompletedTodos = todos => notCompletedTodos(todos) === 0;

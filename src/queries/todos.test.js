@@ -1,5 +1,5 @@
 import stateUpdaters from './todos';
-import { ALL, ACTIVE, COMPLETED } from '../model/filters';
+import { ALL, ACTIVE, COMPLETED } from '../model/filterReducer';
 
 describe('App State Query', () => {
   describe('notCompletedTodos', () => {

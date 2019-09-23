@@ -10,7 +10,6 @@ export default function Todos({
     onSubmitTodo,
     onDeleteTodo
 }) {
-
     const todoElements =  todosQueries
                 .visibleTodos(todos, filter)
                 .map(todo => (
