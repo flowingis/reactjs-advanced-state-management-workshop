@@ -1,24 +1,17 @@
 import React from 'react';
 import TodoItem from './TodoItem';
+import { connect } from 'react-redux';
 
 import todosQueries from '../queries/todos';
 
-export default function Todos({
-    filter,
-    todos,
-    onToggleTodo,
-    onSubmitTodo,
-    onDeleteTodo
+function Todos({
+    visibleTodos
 }) {
-    const todoElements =  todosQueries
-                .visibleTodos(todos, filter)
+    const todoElements =  visibleTodos
                 .map(todo => (
                         <TodoItem
                             key={todo.id}
-                            todo={todo}
-                            onDelete={onDeleteTodo}
-                            onSubmit={onSubmitTodo}
-                            onToggle={onToggleTodo} />
+                            todo={todo} />
                 ));
     return (
         <ul className="todo-list">
@@ -26,3 +19,18 @@ export default function Todos({
         </ul>
     );
 };
+
+const selector = state => {
+    const {
+        todos,
+        filter
+    } = state;
+
+    const visibleTodos =  todosQueries.visibleTodos(todos, filter);
+
+    return {
+        visibleTodos
+    };
+};
+
+export default connect(selector)(Todos);

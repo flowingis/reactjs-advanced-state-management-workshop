@@ -8,42 +8,20 @@ import todosQueries from './queries/todos';
 import actionCreators from './model/actionCreators';
 
 
-function App({todos, filter, dispatch}) {
+function App(props) {
 
-  const notCompletedTodos = todosQueries.notCompletedTodos(todos);
-  const allCompleted = todosQueries.allCompletedTodos(todos);
-  
-  const addTodo = (text) => {
-    dispatch(actionCreators.add(text));
-  };
+  const {
+    toggleAll,
+    allCompleted,
+    shouldShowToggleAll,
+    notCompletedTodos,
+    changeFilter,
+    clearCompleted
+  } = props;
 
-  const clearCompleted = () => {
-    dispatch(actionCreators.clearCompleted());
-  };
-
-  const markAllAsComplete = () => {
-    dispatch(actionCreators.toggleAll());
-  };
-
-  const toggleCompleted = id => {
-    dispatch(actionCreators.toggle(id));
-  };
-
-  const updateTodoText = (id, text) => {
-    dispatch(actionCreators.changeText(id,text));
-  };
-
-  const deleteTodo = id => {
-    dispatch(actionCreators.delete(id));
-  };
-
-  const changeFilter = filter => {
-    dispatch(actionCreators.changeFilter(filter));
-  };
-
-  const toggleAllInput = todos.length > 0 ? (
+  const toggleAllInput = shouldShowToggleAll ? (
     <React.Fragment>
-      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={markAllAsComplete}/>
+      <input id="toggle-all" className="toggle-all" type="checkbox" checked={allCompleted} onChange={toggleAll}/>
       <label htmlFor="toggle-all">Mark all as complete</label>
     </React.Fragment>
   ) : null;
@@ -51,19 +29,14 @@ function App({todos, filter, dispatch}) {
   return (
     <div>
       <section className="todoapp">
-        <Header onNewTodo={addTodo}/>
+        <Header/>
         <section className="main">
           {toggleAllInput}
-          <Todos 
-            filter={filter}
-            todos={todos} 
-            onDeleteTodo={deleteTodo}
-            onToggleTodo={toggleCompleted}
-            onSubmitTodo={updateTodoText}/>
+          <Todos />
         </section>
         <footer className="footer">
           <span className="todo-count">{notCompletedTodos} Item Left</span>
-          <Filter current={filter} onChangeFilter={changeFilter} />
+          <Filter onChangeFilter={changeFilter} />
           <button className="clear-completed" onClick={clearCompleted}>Clear completed</button>
         </footer>
       </section>
@@ -76,4 +49,25 @@ function App({todos, filter, dispatch}) {
   );
 }
 
-export default connect(s => s)(App);
+const selectors = state => {
+  const notCompletedTodos = todosQueries.notCompletedTodos(state.todos);
+  const allCompleted = todosQueries.allCompletedTodos(state.todos);
+  const shouldShowToggleAll = state.todos.length > 0;
+
+  return {
+    notCompletedTodos,
+    allCompleted,
+    shouldShowToggleAll
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  clearCompleted: () => dispatch(actionCreators.clearCompleted()),
+  toggleAll: () => dispatch(actionCreators.toggleAll()),
+  changeFilter: filter => dispatch(actionCreators.changeFilter(filter))
+});
+
+export default connect(
+  selectors,
+  mapDispatchToProps
+)(App);

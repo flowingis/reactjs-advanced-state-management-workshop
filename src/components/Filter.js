@@ -1,7 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { FILTERS } from '../model/filterReducer';
 
-export default function Filter({current, onChangeFilter}) {
+function Filter({current, onChangeFilter}) {
 
     const filters = FILTERS.map(filter => (
         <li key={filter}>
@@ -18,3 +19,5 @@ export default function Filter({current, onChangeFilter}) {
         </ul>
     );
 };
+
+export default connect(s => ({current: s.filter}))(Filter);

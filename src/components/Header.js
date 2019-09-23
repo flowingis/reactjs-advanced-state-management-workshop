@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import actionCreators from '../model/actionCreators';
 
-export default function Header({ onNewTodo }) {
+function Header({ onNewTodo }) {
 
     const [value, setValue] = useState('');
 
@@ -24,3 +26,9 @@ export default function Header({ onNewTodo }) {
         </header>
     );
 };
+
+const mapDispatchToProps = dispatch => ({
+    onNewTodo: text => dispatch(actionCreators.add(text))
+});
+
+export default connect(null, mapDispatchToProps)(Header);

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import actionCreators from '../model/actionCreators';
 
-export default function TodoItem({ 
+function TodoItem({ 
     todo, 
     onToggle, 
     onSubmit,
@@ -70,3 +72,11 @@ export default function TodoItem({
         </li>
     );
 };
+
+const mapDispatchToProps = dispatch => ({
+    onToggle: id => dispatch(actionCreators.toggle(id)),
+    onSubmit: (id, text) => dispatch(actionCreators.changeText(id, text)),
+    onDelete: id => dispatch(actionCreators.delete(id))
+});
+
+export default connect(null, mapDispatchToProps)(TodoItem);
