@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 
@@ -29,7 +29,10 @@ const saveStateMiddleware = store => next => action => {
 const store = createStore(
     reducers, 
     loadState(),
-    applyMiddleware(logger, saveStateMiddleware)
+    compose(
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+        applyMiddleware(logger, saveStateMiddleware)
+    )
 );
 
 ReactDOM.render(
