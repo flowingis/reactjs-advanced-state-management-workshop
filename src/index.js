@@ -15,22 +15,22 @@ const loadState = () => {
     return data ? JSON.parse(data) : undefined;
 };
 
-
 const reducers = combineReducers({
     todos: todosReducer,
     filter: filterReducer
 });
 
+const saveStateMiddleware = store => next => action => {
+    const result = next(action);
+    window.localStorage.setItem('STATE', JSON.stringify(store.getState()));
+    return result;
+};
+
 const store = createStore(
     reducers, 
     loadState(),
-    applyMiddleware(logger)
+    applyMiddleware(logger, saveStateMiddleware)
 );
-
-store.subscribe(() => {
-    window.localStorage.setItem('STATE', JSON.stringify(store.getState()));
-});
-
 
 ReactDOM.render(
     <Provider store={store}>
