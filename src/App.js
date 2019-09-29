@@ -1,14 +1,20 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, {useReducer} from 'react';
 
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Todos from './components/Todos';
 import todosQueries from './queries/todos';
 import actionCreators from './model/actionCreators';
+import reducer, { INITIAL_STATE } from './model/reducer';
 
+function App() {
 
-function App({todos, filter, dispatch}) {
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  
+  const {
+    filter,
+    todos
+  } = state;
 
   const notCompletedTodos = todosQueries.notCompletedTodos(todos);
   const allCompleted = todosQueries.allCompletedTodos(todos);
@@ -76,4 +82,4 @@ function App({todos, filter, dispatch}) {
   );
 }
 
-export default connect(s => s)(App);
+export default App;
